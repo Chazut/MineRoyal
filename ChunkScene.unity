@@ -280,7 +280,8 @@ MonoBehaviour:
   player: {fileID: 54321403}
   textureAtlas: {fileID: 2100000, guid: 760d1d3a6594dd34292aa5a26a4cf522, type: 2}
   fluidTexture: {fileID: 2100000, guid: 5b111e8e11b241e49bbf0a9798c2c008, type: 2}
-  worldSize: 5
+  worldSize: 3
+  seed: I3qCo9fq:ZQEe:QW9K7:HqDpQzO20
   loadingAmount: {fileID: 1421476177}
   playButton: {fileID: 207447208}
   lastbuildPos: {x: 0, y: 0, z: 0}

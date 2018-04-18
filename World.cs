@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 //using Realtime.Messaging.Internal;
@@ -13,6 +14,7 @@ public class World : MonoBehaviour
     public static int columnHeight = 16;
     public static int chunkSize = 16;
     public int worldSize = 3;
+    public string seed = "";
     public static Dictionary<string, Chunk> chunks;
     //public static int radius = 5;
     //public static ConcurrentDictionary<string, Chunk> dyn_chunks;
@@ -286,9 +288,10 @@ public class World : MonoBehaviour
 
     public void StartBuild()
     {
+        Utils.seed = seed;
+        Utils.generateSeed();
         StartCoroutine(BuildWorld());
-        long lVal = System.BitConverter.DoubleToInt64Bits(Utils.offset);
-        string hex = lVal.ToString("X");
-        Debug.Log("seed : " + hex + ":" + Utils.xOffset + ":" + Utils.yOffset + ":" + Utils.zOffset);
+        Debug.Log("seed : " + Utils.alpha_offset + ":" + Utils.alpha_xOffset + ":" + Utils.alpha_yOffset + ":" + Utils.alpha_zOffset + " (" + Utils.offset + ":" + Utils.xOffset + ":" + Utils.yOffset + ":" + Utils.zOffset + ")");
+        //Debug.Log("seed : " + Utils.alpha_offset + " --> " + Utils.offset);
     }
 }

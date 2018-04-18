@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class Utils
@@ -10,10 +11,87 @@ public class Utils
     static int octaves = 4;
     static float persistence = 0.5f;
 
+    public static string alpha_offset = "";
     public static float offset = 0f;
+    public static string alpha_xOffset = "";
     public static float xOffset = 0f;
+    public static string alpha_yOffset = "";
     public static float yOffset = 0f;
+    public static string alpha_zOffset = "";
     public static float zOffset = 0f;
+
+    public static string seed = "";
+
+    private static int nbChar(string chaine, char lettre)
+    {
+        int nb = 0;
+        foreach (char c in chaine)
+        {
+            if (c == lettre) nb++;
+        }
+        return nb;
+    }
+
+    private static string getStringAt(string chaine, int debut, int fin)
+    {
+        var builder = new StringBuilder();
+        for (int i=debut; i<fin; i++)
+        {
+            builder.Append(chaine[i]);
+        }
+        return builder.ToString();
+    }
+
+    public static void generateSeed()
+    {
+        if(seed.Length != 0)
+        {
+            if (Utils.nbChar(seed, ':') != 3)
+            {
+                while (seed.Length < 10)
+                {
+                    seed += seed;
+                }
+                int nbr = (seed.Length + 1) / 4;
+                for (int i = 0; i < seed.Length; i++)
+                {
+                    if (i < nbr)
+                    {
+                        alpha_offset += seed[i];
+                    }
+                    else if (i < nbr * 2)
+                    {
+                        alpha_xOffset += seed[i];
+                    }
+                    else if (i < nbr * 3)
+                    {
+                        alpha_yOffset += seed[i];
+                    }
+                    else
+                    {
+                        alpha_zOffset += seed[i];
+                    }
+                }
+            }
+            else
+            {
+                string str = seed;
+                int index = str.IndexOf(':');
+                alpha_offset = Utils.getStringAt(str, 0, index);
+
+                str = Utils.getStringAt(str, index+1, str.Length);
+                index = str.IndexOf(':');
+                alpha_xOffset = Utils.getStringAt(str, 0, index);
+
+                str = Utils.getStringAt(str, index+1, str.Length);
+                index = str.IndexOf(':');
+                alpha_yOffset = Utils.getStringAt(str, 0, index);
+
+                str = Utils.getStringAt(str, index+1, str.Length);
+                alpha_zOffset = str;
+            }
+        }
+    }
 
     public static int GenerateStoneHeight(float x, float z)
     {
@@ -31,15 +109,36 @@ public class Utils
     {
         if(xOffset == 0f)
         {
-            xOffset = Random.Range(-100000f, 100000f);
+            //xOffset = Random.Range(-100000f, 100000f);
+            if(alpha_xOffset.Length == 0)
+                alpha_xOffset = RandomString(Random.Range(3,10));
+            xOffset = alpha_xOffset.GetHashCode() / 1000;
+            while (Mathf.Abs(xOffset) > 250000)
+            {
+                xOffset = xOffset / 10;
+            }
         }
         if (yOffset == 0f)
         {
-            yOffset = Random.Range(-100000f, 100000f);
+            //yOffset = Random.Range(-100000f, 100000f);
+            if (alpha_yOffset.Length == 0)
+                alpha_yOffset = RandomString(Random.Range(3, 10));
+            yOffset = alpha_yOffset.GetHashCode() / 1000;
+            while(Mathf.Abs(yOffset) > 250000)
+            {
+                yOffset = yOffset / 10;
+            }
         }
         if (zOffset == 0f)
         {
-            zOffset = Random.Range(-100000f, 100000f);
+            //zOffset = Random.Range(-100000f, 100000f);
+            if (alpha_zOffset.Length == 0)
+                alpha_zOffset = RandomString(Random.Range(3, 10));
+            zOffset = alpha_zOffset.GetHashCode() / 1000;
+            while (Mathf.Abs(zOffset) > 250000)
+            {
+                zOffset = zOffset / 10;
+            }
         }
         float XY = fBM((x+xOffset) * sm, (y+yOffset) * sm, oct, 0.5f);
         float YZ = fBM((y+yOffset) * sm, (z+zOffset) * sm, oct, 0.5f);
@@ -65,7 +164,14 @@ public class Utils
         float maxValue = 0;
         if(offset == 0f)
         {
-            offset = Random.Range(-100000, 100000f);
+            if (alpha_offset.Length == 0)
+                alpha_offset = RandomString(Random.Range(3, 10));
+            offset = alpha_offset.GetHashCode() / 1000;
+            while (Mathf.Abs(offset) > 250000)
+            {
+                offset = offset / 10;
+            }
+            //offset = Random.Range(-100000, 100000f);
         }
         for (int i = 0; i < oct; i++)
         {
@@ -78,5 +184,19 @@ public class Utils
         }
 
         return total / maxValue;
+    }
+
+    private static string RandomString(int length)
+    {
+        const string pool = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var builder = new StringBuilder();
+
+        for (var i = 0; i < length; i++)
+        {
+            var c = pool[Random.Range(0, pool.Length)];
+            builder.Append(c);
+        }
+
+        return builder.ToString();
     }
 }

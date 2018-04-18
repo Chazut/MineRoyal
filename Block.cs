@@ -154,6 +154,7 @@ public class Block
             //owner.UpdateChunk();
             return true;
         }
+        //this.Draw();
         owner.Redraw();
         return false;
     }
